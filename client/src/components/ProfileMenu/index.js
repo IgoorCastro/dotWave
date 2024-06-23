@@ -47,6 +47,16 @@ const ProfileMenu = () => {
         navigate(link);
     }
 
+    const handleSignin = () => {
+        navigate('/');
+        toggleIsLoginVisible();
+    }
+
+    const handleSignup = () => {
+        navigate('/');
+        toggleIsCadastroVisible();
+    }
+
     return (
             <C.UserMenuContainer onClick={togglerMenu} tabIndex="0" ref={userMenuRef}>
                 <C.UserMenuImg src={user ? user[0].usu_image : userDefaultPicture} style={{ width: !user ? '60%' : 'auto' }} />
@@ -85,7 +95,7 @@ const ProfileMenu = () => {
                     ) : (
                         <C.UserDropMenuContainer onClick={handleClickInside}>
                             <C.UserDropMenuContent>
-                                <C.UserDropMenuLine onClick={toggleIsLoginVisible} >
+                                <C.UserDropMenuLine onClick={handleSignin} >
                                     <C.UserDropMenuIconContainer>
                                         <C.UserDropMenuIcon src={exitIcon} poz />
                                     </C.UserDropMenuIconContainer>
@@ -94,9 +104,9 @@ const ProfileMenu = () => {
                                     </C.UserDropMenuLabel>
                                 </C.UserDropMenuLine>
 
-                                <C.UserDropMenuLine onClick={toggleIsCadastroVisible} >
+                                <C.UserDropMenuLine onClick={handleSignup} >
                                     <C.UserDropMenuIconContainer>
-                                        <C.UserDropMenuIcon src={exitIcon} poz />
+                                        <C.UserDropMenuIcon src={exitIcon} />
                                     </C.UserDropMenuIconContainer>
                                     <C.UserDropMenuLabel>
                                         Cadastro

@@ -43,29 +43,31 @@ const UserProfile = () => {
 
     // Metodo para verificar quais as midias disponiveis do usuario
     const checkSocialMidia = () => {
-        // Lista de ícones válidos
-        const validSocial = [];
+        if (searchUser) {
+            // Lista de ícones válidos
+            const validSocial = [];
 
-        const socialIcons = [
-            { midiaUrl: 'usu_instagram', icon: InstaIcon, bgColor: '#FF006E' },
-            { midiaUrl: 'usu_x', icon: TwitterIcon, bgColor: '#0099FF' },
-            { midiaUrl: 'usu_youtube', icon: YoutubeIcon, bgColor: '#FB5607' },
-            { midiaUrl: 'usu_spotify', icon: SpotifyIcon, bgColor: '#FFBE0B' },
-            { midiaUrl: 'usu_soundcloud', icon: SoundcloudIcon, bgColor: '#8338EC' }
-        ];
+            const socialIcons = [
+                { midiaUrl: 'usu_instagram', icon: InstaIcon, bgColor: '#FF006E' },
+                { midiaUrl: 'usu_x', icon: TwitterIcon, bgColor: '#0099FF' },
+                { midiaUrl: 'usu_youtube', icon: YoutubeIcon, bgColor: '#FB5607' },
+                { midiaUrl: 'usu_spotify', icon: SpotifyIcon, bgColor: '#FFBE0B' },
+                { midiaUrl: 'usu_soundcloud', icon: SoundcloudIcon, bgColor: '#8338EC' }
+            ];
 
-        for (const { midiaUrl, icon, bgColor } of socialIcons) {
-            if (user[0][midiaUrl] !== '' & user[0][midiaUrl] !== null) {
-                console.log('midiaUrl: ', midiaUrl, ': ', user[0][midiaUrl]);
-                validSocial.push(
-                    <div>
-                        <SocialIcon key={midiaUrl} src={icon} onClick={() => window.open('https://' + user[0][midiaUrl], '_blank')} borderColor={bgColor} alt='' />
-                    </div>
-                );
+            for (const { midiaUrl, icon, bgColor } of socialIcons) {
+                if (searchUser.midiaUrl !== '' & searchUser.midiaUrl !== null) {
+                    console.log('midiaUrl: ', midiaUrl, ': ', searchUser.midiaUrl);
+                    validSocial.push(
+                        <div>
+                            <SocialIcon key={midiaUrl} src={icon} onClick={() => window.open('https://' + user[0][midiaUrl], '_blank')} borderColor={bgColor} alt='' />
+                        </div>
+                    );
+                }
+
             }
-
+            return validSocial.length > 0 ? validSocial : null;
         }
-        return validSocial.length > 0 ? validSocial : null;
     }
 
     useEffect(() => {
