@@ -1,0 +1,28 @@
+/* Fonte padrão */
+@font-face {
+  font-family: 'Gueda-Bold';
+  src: url('../src/fonts/Gudea-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Gueda-Italic';
+  src: url('../src/fonts/Gudea-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Gueda-Regular';
+  src: url('../src/fonts/Gudea-Regular.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'TheBoldFont';
+  src: url('../src/fonts/TheBoldFont.otf') format('opentype'),
+       url('../src/fonts/TheBoldFont.ttf') format('truetype');
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  font-family: 'Gueda-Regular', sans-serif;
+}
