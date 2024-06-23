@@ -69,8 +69,6 @@ const UserProfile = () => {
     }
 
     useEffect(() => {
-        console.log('\n\n(TEST) --> user\n', user);
-        checkSocialMidia();
         setMusicList(null);
         const fetchUserData = async () => {
             let searchId = null;

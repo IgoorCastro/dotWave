@@ -32,11 +32,13 @@ export const UserDropMenuContainer = styled.div`
     z-index: 999; 
 
     width: 180px;
-    height: 140px;
+    height: auto;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    padding: 15px 0;
 
     cursor: default;
 
@@ -54,6 +56,8 @@ export const UserDropMenuContent = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+
+    gap: 5px;
 
     // border: 1px solid red;
 `;
@@ -82,6 +86,8 @@ export const UserDropMenuLine = styled.div`
 export const UserDropMenuIconContainer = styled.div`
     width: 26%;
     height: 80%;
+
+    margin: 5px 0;
 
     display: flex;
     justify-content: center;

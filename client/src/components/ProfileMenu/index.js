@@ -8,10 +8,11 @@ import confIcon from '../../assets/userProfileIcons/conf.svg';
 import editIcon from '../../assets/userProfileIcons/edit.svg';
 import exitIcon from '../../assets/userProfileIcons/exit.svg';
 import { useAuthContext } from '../../context/AuthContext';
+import { useMainContext } from '../../context/DataContext';
 
 const ProfileMenu = () => {
-    const { user } = useAuthContext();
-    const { logout } = useAuthContext();
+    const { user, logout } = useAuthContext();
+    const { toggleIsLoginVisible, toggleIsCadastroVisible } = useMainContext();
     const [showUserMenu, setShowUserMenu] = useState(false);
     const userMenuRef = useRef(null);
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ const ProfileMenu = () => {
     return (
             <C.UserMenuContainer onClick={togglerMenu} tabIndex="0" ref={userMenuRef}>
                 <C.UserMenuImg src={user ? user[0].usu_image : userDefaultPicture} style={{ width: !user ? '60%' : 'auto' }} />
-                {user && showUserMenu && (
+                {showUserMenu && (
                     user ? (
                         <C.UserDropMenuContainer onClick={handleClickInside}>
                             <C.UserDropMenuContent>
@@ -84,9 +85,21 @@ const ProfileMenu = () => {
                     ) : (
                         <C.UserDropMenuContainer onClick={handleClickInside}>
                             <C.UserDropMenuContent>
-                                <C.UserDropMenuLine onClick={() => alert("Login")} position="center">
+                                <C.UserDropMenuLine onClick={toggleIsLoginVisible} >
+                                    <C.UserDropMenuIconContainer>
+                                        <C.UserDropMenuIcon src={exitIcon} poz />
+                                    </C.UserDropMenuIconContainer>
                                     <C.UserDropMenuLabel>
                                         Login
+                                    </C.UserDropMenuLabel>
+                                </C.UserDropMenuLine>
+
+                                <C.UserDropMenuLine onClick={toggleIsCadastroVisible} >
+                                    <C.UserDropMenuIconContainer>
+                                        <C.UserDropMenuIcon src={exitIcon} poz />
+                                    </C.UserDropMenuIconContainer>
+                                    <C.UserDropMenuLabel>
+                                        Cadastro
                                     </C.UserDropMenuLabel>
                                 </C.UserDropMenuLine>
                             </C.UserDropMenuContent>

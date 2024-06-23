@@ -220,8 +220,6 @@ app.get("/getUser", async (req, res) => {
             if(user.length > 0){
                 user[0].usu_image = `http://localhost:3006/profileImage/${path.basename(user[0].usu_image)}`;
             }
-            
-            console.log('> Resultado\n', user);
             res.send(user);
         }catch(er){
             console.error('\n>>Erro em /getUser\nErro: ', er)
@@ -242,7 +240,6 @@ app.get("/getUser", async (req, res) => {
                 console.log('\n>user\n', user);
                 user[0].usu_image = `http://localhost:3006/profileImage/${path.basename(user[0].usu_image)}`;
             }
-    
             
             res.send(user);
         }catch(er){
