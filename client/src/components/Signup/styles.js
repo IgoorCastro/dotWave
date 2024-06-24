@@ -233,6 +233,7 @@ export const Main = styled.div`
 `;
 
 export const InputContainer = styled.div`
+    position: relative;
     width: 100%;
     height: 16.66%;
 
@@ -263,7 +264,62 @@ export const InputContainer = styled.div`
         border-radius: .3rem;
         border: 1px solid #1E1E1E;
     }
+    
     // border: 1px solid red;
+`;
+
+export const InputPasswordContainer = styled.div`
+    position: relative;
+    width: 100%;
+    height: 16.66%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    font-family: Gueda-Regular;
+    ${labelSize};
+
+    & > label {
+        text-transform: uppercase;
+        max-width: 25%;
+    }
+
+    & > div {
+        width: 72%;
+        max-width: 75%;
+        height: 45%;
+
+        display: flex;
+        flex-direction: column;
+
+        // border: 1px solid blue;
+
+        & > input {
+            width: 100%;
+            max-width: 100%;
+            height: 85%;
+
+            font-size: 1.2rem;
+            outline: none;
+
+            border-radius: .3rem;
+            border: 1px solid #1E1E1E;
+        }
+
+        & > .password-score {
+            height: 15%;
+            // width: 100%;
+
+            border-radius: .2rem;
+            // border: 1px solid #1E1E1E;
+        }
+    
+    }
+
+    
+    // border: 1px solid blue;
 `;
 
 export const MusicCover= styled.div`

@@ -602,14 +602,17 @@ app.put("/editProfile", upload.fields([
                 console.log('selectResult: ', selectResult[0][0]);
                 const deleteImagePath = selectResult[0][0].usu_image;
                 console.log('\n>Apagando arquivo de imagem: ', deleteImagePath);
-                fs.unlinkSync(deleteImagePath);
-                console.log('>Arquivo deletado');
+                if(deleteImagePath){
+                    fs.unlinkSync(deleteImagePath);
+                    console.log('>Arquivo deletado');
+                }else
+                    console.log('>Nenhuma imagem encontrada');
+                
             }
 
             const imageDestination = `${files.imagem[0].destination}\\${files.imagem[0].filename}`
             // console.log('imageDestination: ', imageDestination);
             files.imagem[0].destination = imageDestination;
-            console.log('files\n', files.imagem[0]);
             SQL = "UPDATE usuario SET usu_image = ? WHERE usu_id = ?";
             console.log('\n>Atualizando imagem');
             const updateResult = await db.query(SQL, [files.imagem[0].destination, body.usu_id]);

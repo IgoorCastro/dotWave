@@ -43,6 +43,7 @@ const UserProfile = () => {
 
     // Metodo para verificar quais as midias disponiveis do usuario
     const checkSocialMidia = () => {
+        console.log('(TEST) --> searchUser: ', searchUser);
         if (searchUser) {
             // Lista de ícones válidos
             const validSocial = [];
@@ -56,11 +57,11 @@ const UserProfile = () => {
             ];
 
             for (const { midiaUrl, icon, bgColor } of socialIcons) {
-                if (searchUser.midiaUrl !== '' & searchUser.midiaUrl !== null) {
-                    console.log('midiaUrl: ', midiaUrl, ': ', searchUser.midiaUrl);
+                console.log('midiaUrl: ', midiaUrl, ': ', searchUser[midiaUrl]);
+                if (searchUser[midiaUrl] !== '' & searchUser[midiaUrl] !== null & searchUser[midiaUrl] !== undefined) {                    
                     validSocial.push(
                         <div>
-                            <SocialIcon key={midiaUrl} src={icon} onClick={() => window.open('https://' + user[0][midiaUrl], '_blank')} borderColor={bgColor} alt='' />
+                            <SocialIcon key={midiaUrl} src={icon} onClick={() => window.open('https://' + searchUser[midiaUrl], '_blank')} borderColor={bgColor} alt='' />
                         </div>
                     );
                 }

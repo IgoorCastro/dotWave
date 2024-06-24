@@ -11,6 +11,7 @@ import { useMainContext } from '../../context/DataContext';
 import ConfirmDialog from '../ConfirmDialog';
 
 const Signup = () => {
+  const zxcvbn = require('zxcvbn');
   const { toggleIsCadastroVisible, toggleConfirmDialogVisible, isConfirmDialogVisible } = useMainContext();
   const cbxPoliticaRef = useRef(null);
   const cbxTermosRef = useRef(null);
@@ -20,6 +21,12 @@ const Signup = () => {
   const [nextForm, setNextForm] = useState(false);
   const [labelErro, setLabelErro] = useState(null);
   const [userImg, setUserImg] = useState(null);
+  const [passwordScoreConfig, setPasswordScoreConfig] = useState({
+    color: 'transparent',
+    width: ''
+  }); // Estado para armazenar as config da senha
+  const [passwordScore, setPasswordScore] = useState(0);
+  // const [passwordColor, setPasswordColor] = useState('trasnparent');
   const [cadastroForm, setCadastroForm] = useState({
     nome: '',   // Brendan 
     sobrenome: '', // Halabi
@@ -51,7 +58,6 @@ const Signup = () => {
       try {
         const formData = new FormData();
         for (const key in cadastroForm) {
-          console.log('key: ', key, '\n\nnewMusic: ', cadastroForm, '\n\ncadastroForm[key]: ', cadastroForm[key]);
           if (cadastroForm[key] instanceof File) {
             formData.append(key, cadastroForm[key]);
           } else if (Array.isArray(cadastroForm[key])) {
@@ -106,43 +112,48 @@ const Signup = () => {
   }
 
   const handleNextForm = async () => {
-    try{
-      const usernameTest = await Axios.get("http://localhost:3006/usernameTest", {
-        params: {
-          username: cadastroForm.nomeDeUsuario
+    console.log(passwordScoreConfig);
+    if(passwordScore > 2){
+      try{
+        const usernameTest = await Axios.get("http://localhost:3006/usernameTest", {
+          params: {
+            username: cadastroForm.nomeDeUsuario
+          }
+        });
+    
+        if (usernameTest.data) {
+          setLabelErro('Nome de usuário já cadastrado');
+          return;
         }
-      });
+      }catch(er){
+        console.error('\n\n>Erro ao testar o nome de usuario\n-->Erro: ', er)
+      }
   
-      if (usernameTest.data) {
-        setLabelErro('Nome de usuário já cadastrado');
-        return;
-      }
-    }catch(er){
-      console.error('\n\n>Erro ao testar o nome de usuario\n-->Erro: ', er)
-    }
-
-    try {
-      console.log('------');
-      const phoneNumberTest = await Axios.get("http://localhost:3006/phoneNumberTest", { // checar se  o numero de telefone está livre
-        params: {
-          phoneNumber: cadastroForm.telefone
+      try {
+        const phoneNumberTest = await Axios.get("http://localhost:3006/phoneNumberTest", { // checar se  o numero de telefone está livre
+          params: {
+            phoneNumber: cadastroForm.telefone
+          }
+        });
+        if (phoneNumberTest.data) { // verifica se a resposta do server é true
+          setLabelErro('Telefone já cadastrado');
+          return;
         }
-      });
-      if (phoneNumberTest.data) { // verifica se a resposta do server é true
-        setLabelErro('Telefone já cadastrado');
-        return;
+      } catch (er) {
+        console.error('\n\n>Erro ao testar o número de telefone\n-->Erro: ', er);
       }
-    } catch (er) {
-      console.error('\n\n>Erro ao testar o número de telefone\n-->Erro: ', er);
+  
+      if (cbxPoliticaRef.current.checked && cbxTermosRef.current.checked) {
+        if (isFormComplete(cadastroForm))
+          setNextForm(!nextForm)
+        else
+          setLabelErro('Preencha todos os campos');
+      } else
+        setLabelErro('Leia e concorde com os termos e políticas');
+    }else {
+      setLabelErro('Sua senha deve ser forte');
     }
-
-    if (cbxPoliticaRef.current.checked && cbxTermosRef.current.checked) {
-      if (isFormComplete(cadastroForm))
-        setNextForm(!nextForm)
-      else
-        setLabelErro('Preencha todos os campos');
-    } else
-      setLabelErro('Leia e concorde com os termos e políticas');
+      
   }
 
   const handleChangeValues = (event) => {
@@ -153,6 +164,34 @@ const Signup = () => {
       [name]: value,
     }));
     setLabelErro(null);
+
+    if (name === 'senha') { // Verificar se a senha possui um caractere especial e uma letra maiuscula
+      const checkedPass = zxcvbn(value);
+      setPasswordScore(checkedPass.score);
+      
+       // Verificação de caractere especial
+       const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/g.test(value);
+
+       // Verificação de letra maiúscula
+       const hasUpperCase = /[A-Z]/g.test(value);
+ 
+       // Ajustar a pontuação e adicionar sugestão se necessário
+       if ((!hasSpecialCharacter || !hasUpperCase) && checkedPass.score > 3) {
+         checkedPass.score = 3; // Reduzir a pontuação para 3 se não atender aos critérios
+         if (!hasSpecialCharacter) {
+           setLabelErro("Adicione pelo menos um caractere especial.");
+         }
+         if (!hasUpperCase) {
+          setLabelErro("Inclua pelo menos uma letra maiúscula.");
+         }
+       }
+
+       setPasswordScoreConfig({
+        color: getScoreColor(checkedPass.score),
+        width: getScoreWidth(checkedPass.score)
+      });
+    }
+    
   }
 
   const handleImageChange = (event) => {
@@ -200,7 +239,43 @@ const Signup = () => {
 
   const handleShowDialogConfirmation = () => {
     toggleConfirmDialogVisible(!isConfirmDialogVisible);
-};
+  };
+
+  // Função para determinar a cor da div com base no score
+  const getScoreColor = (score) => {
+    switch(score) {
+      case 0:
+        return 'transparent';
+      case 1:
+        return '#FF3333';
+      case 2:
+        return '#FB5607';
+      case 3:
+        return '#FFBE0B';
+      case 4:
+        return '#00BF63';
+      default:
+        return 'transparent';
+    }
+  };
+
+  // Função para determinar a cor da div com base no score
+  const getScoreWidth = (score) => {
+    switch(score) {
+      case 0:
+        return '';
+      case 1:
+        return '25%';
+      case 2:
+        return '50%';
+      case 3:
+        return '75%';
+      case 4:
+        return '100%';
+      default:
+        return '';
+    }
+  };
 
   return (
     <C.LoginContainer>
@@ -334,12 +409,15 @@ const Signup = () => {
                         </label>
                         <input type='email' name='email' onChange={(e) => handleChangeValues(e)} />
                       </C.InputContainer>
-                      <C.InputContainer>
+                      <C.InputPasswordContainer>
                         <label>
                           Senha:<span style={{ color: '#FB5607' }}>*</span>
                         </label>
-                        <input type='password' name='senha' onChange={(e) => handleChangeValues(e)} />
-                      </C.InputContainer>
+                        <div>
+                          <input type='password' name='senha' onChange={(e) => handleChangeValues(e)} />
+                          <div className='password-score' style={{ background: passwordScoreConfig.color, width: passwordScoreConfig.width }} />
+                        </div>
+                      </C.InputPasswordContainer>
                     </div>
                     <div className='errorContainer'>
                       <div className='chbContainer'>
