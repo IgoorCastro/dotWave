@@ -22,10 +22,10 @@ const SamplePlayer = ({ musicId }) => {
   const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
 
   const samplesColor = [
-    { color: '#FFBE0B' },
-    { color: '#FB5607' },
-    { color: '#FF006E' },
-    { color: '#0099FF' },
+    { type: 'Vocal', color: '#FFBE0B' },
+    { type: 'Percussão', color: '#FB5607' },
+    { type: 'Baixo', color: '#FF006E' },
+    { type: 'Synth/ Piano', color: '#0099FF' },
   ];
 
   useEffect(() => {
@@ -46,14 +46,24 @@ const SamplePlayer = ({ musicId }) => {
     fetchSampleList();
   }, [musicId]);
 
+  const checkSampleColor = (index) => {
+    let color = null;
+    samplesColor.map(item => { // checar a cor da sample
+      if (item.type === sampleList[index].sam_tipo)
+        color = item.color;
+    });
+    return color;
+  }
+
   useEffect(() => {
     if (sampleList.length > 0 && waveSurferRefs.current.length === 0) {
-      waveSurferRefs.current = sampleList.map((sample, index) => {
+      waveSurferRefs.current = sampleList.map((sample, index) => {               
+      const waveColor = checkSampleColor(index);
         const waveSurfer = WaveSurfer.create({
           container: `#waveform-${index}`,
           height: 40,
-          waveColor: samplesColor[index % samplesColor.length].color,
-          progressColor: samplesColor[index % samplesColor.length].color,
+          waveColor: waveColor,
+          progressColor: waveColor,
           cursorColor: '#C3C4CC',
           barWidth: 3,
           barHeight: 2,
@@ -154,7 +164,7 @@ const SamplePlayer = ({ musicId }) => {
 
           <C.SamplePlayer id={`waveform-${index}`} />
 
-          <C.VolumeBar color={samplesColor[index % samplesColor.length].color}>
+          <C.VolumeBar color={checkSampleColor(index)}>
             <input
               type="range"
               min="0"

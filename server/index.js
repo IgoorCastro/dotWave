@@ -246,6 +246,7 @@ app.get("/getUser", async (req, res) => {
             console.error('\n>>Erro em /getUser\nErro: ', er)
         }
     }
+    console.log('--------------------------\n\n\n');
 });
 
 app.get("/getSampleList", async (req, res) => {
@@ -465,10 +466,8 @@ app.put("/editMusic", upload.fields([
         let params = [];
       
         // Construção da SQL dinâmica e do array de parâmetros
-        for (let key in body) {
-            
+        for (let key in body) {            
           if (key !== "usu_token" && key !== "mus_id" && key !== "capa" && key !== "audio" && body[key] !== undefined && body[key]) {
-            console.log('(TEST) --> key: ', key, 'body[key]: ', body[key]);
             SQL += ` mus_${key} = ?,`;
             params.push(body[key]); // Adiciona o valor do campo ao array de parâmetros
           }
@@ -478,19 +477,36 @@ app.put("/editMusic", upload.fields([
         if (audioFileName || audioFileName !== null) {
           SQL += ` mus_audio = ?,`;
           params.push(audioFileName);
+
+          // Apagar o arquivo atual do server
+          const currentFIle = await db.query("SELECT mus_audio FROM musica WHERE mus_id = ?", [body.mus_id]);
+          if(currentFIle){
+            console.log('>Deletando arquivo de audio: ', currentFIle[0][0]);
+            const fileToDelete = currentFIle[0][0].mus_audio;
+            fs.unlinkSync(fileToDelete);
+            console.log('>Arquivo deletado\n');
+          }
         }
       
         if (capaFileName || capaFileName !== null) {
           SQL += ` mus_capa = ?,`;
           params.push(capaFileName);
+          
+          // Apagar o arquivo atual do server
+          const currentFIle = await db.query("SELECT mus_capa FROM musica WHERE mus_id = ?", [body.mus_id]);
+          if(currentFIle){
+            console.log('>Deletando arquivo de audio: ', currentFIle[0][0]);
+            const fileToDelete = currentFIle[0][0].mus_capa;
+            fs.unlinkSync(fileToDelete);
+            console.log('>Arquivo deletado\n');
+          }
         }
       
         SQL = SQL.slice(0, -1); // Remove a última vírgula da query SQL, se houver
         SQL += " WHERE mus_id = ?";
-        params.push(body.mus_id); // Adiciona o mus_id ao final do array de parâmetros
-      
-        console.log('SQL: ', SQL);
-        console.log('Array: ', params);
+        params.push(body.mus_id); // Adiciona o mus_id ao final do array de parâmetros      
+        // console.log('SQL: ', SQL);
+        // console.log('Array: ', params);
       
         // Executar a query no banco de dados
         const resp = await db.query(SQL, params);
