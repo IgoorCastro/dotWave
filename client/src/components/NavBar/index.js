@@ -31,9 +31,7 @@ const NavBar = () => {
     }
 
     const handleAddMusic = () => {
-        console.log('isAddMusicVisible: ', isAddMusicVisible);
         toggleAddMusicVisible();
-        console.log('~~ isAddMusicVisible: ', isAddMusicVisible);
     }
 
     return (

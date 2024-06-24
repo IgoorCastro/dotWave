@@ -57,8 +57,8 @@ const SamplePlayer = ({ musicId }) => {
 
   useEffect(() => {
     if (sampleList.length > 0 && waveSurferRefs.current.length === 0) {
-      waveSurferRefs.current = sampleList.map((sample, index) => {               
-      const waveColor = checkSampleColor(index);
+      waveSurferRefs.current = sampleList.map((sample, index) => {
+        const waveColor = checkSampleColor(index);
         const waveSurfer = WaveSurfer.create({
           container: `#waveform-${index}`,
           height: 40,
@@ -75,11 +75,9 @@ const SamplePlayer = ({ musicId }) => {
 
         waveSurfer.on('ready', () => {
           waveSurfer.setVolume(1);
-          console.log(`Sample ${index} ready`);
         });
 
         waveSurfer.on('finish', () => {
-          console.log(`Audio finished playing: ${index}`);
           const updatedIsPlayingList = [...isPlayingList];
           updatedIsPlayingList[index] = false;
           setIsPlayingList(updatedIsPlayingList);

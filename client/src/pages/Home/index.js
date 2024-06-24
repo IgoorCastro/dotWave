@@ -23,20 +23,19 @@ const Home = () => {
         telefone: '(47) 9 6482-4433',
         email: 'contato@dotwave.com'
     }
-    
+
     useEffect(() => {
         const fetchUserData = async () => {
-            if(user){
+            if (user) {
                 try {
                     const response = await Axios.get("http://localhost:3006/getUser", { // busca pelo usuario pesquisado
                         params: {
                             username: user[0].usu_nomeExb
                         }
                     });
-                    console.log('response.data\n', response.data);
                     if (response.data)
                         setUser(response.data);
-    
+
                 } catch (er) {
                     console.error('\n(Home) >>Erro em fetchUserData\n\n-->Erro: ', er);
                 }
@@ -57,7 +56,7 @@ const Home = () => {
     const handleCadastroVisible = () => {
         toggleIsCadastroVisible();
     }
-    
+
     const handleMinhaConta = () => {
         const link = '/' + user[0].usu_nomeExb;
         console.log('link: ', link);
@@ -87,7 +86,7 @@ const Home = () => {
                     <C.Link hover="true" onClick={() => alert("Atualizações")}>Atualizações</C.Link>
                 </C.MainContent>
                 {!user && (
-                    <C.MainContent style={{ width: '10%', alignItems: 'end'}}>
+                    <C.MainContent style={{ width: '10%', alignItems: 'end' }}>
                         <C.Link hover="true" onClick={handleLoginVisible}>Login</C.Link>
                         <C.Link hover="true" onClick={handleCadastroVisible}>Cadastro</C.Link>
                     </C.MainContent>
@@ -108,9 +107,9 @@ const Home = () => {
                 </C.FooterContent>
 
                 <C.FooterContent>
-                    <C.Link hover="false" style={{width: 'max-content'}}>Sobre nós</C.Link>
-                    <C.Link hover="false" style={{width: 'max-content'}}>Fale conosco</C.Link>
-                    <C.Link hover="false" style={{width: 'max-content'}}>Politicas de privacidade</C.Link>
+                    <C.Link hover="false" style={{ width: 'max-content' }}>Sobre nós</C.Link>
+                    <C.Link hover="false" style={{ width: 'max-content' }}>Fale conosco</C.Link>
+                    <C.Link hover="false" style={{ width: 'max-content' }}>Politicas de privacidade</C.Link>
                 </C.FooterContent>
 
                 <C.FooterContent>
@@ -123,7 +122,7 @@ const Home = () => {
 
                 <C.FooterContent>
                     <C.Link hover="false">Painel</C.Link>
-                    <C.Link hover="false" style={{width: 'max-content'}} onClick={handleMinhaConta}>Minha conta</C.Link>
+                    <C.Link hover="false" style={{ width: 'max-content' }} onClick={handleMinhaConta}>Minha conta</C.Link>
                 </C.FooterContent>
             </C.FooterSection>
         </C.HomeContainer>

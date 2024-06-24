@@ -19,7 +19,6 @@ import { useMainContext } from '../../context/DataContext';
 import { useAuthContext } from '../../context/AuthContext';
 
 const EditMusic = ({ music }) => {
-    console.log('\n\nEditMusic');
     const { toggleEditMusicVisible, toggleConfirmDialogVisible, isConfirmDialogVisible, toggleUserProfileUpdate, setSelectedMusic } = useMainContext();
     const [isLoading, setIsLoading] = useState(false);
     const { user, token } = useAuthContext();
@@ -79,7 +78,6 @@ const EditMusic = ({ music }) => {
                 params: { usu_nomeExb: user[0].nomeExb }
             });
             
-            console.log('Musica atualizada com sucesso'); 
             setIsLoading(!isLoading);
             setTimeout(() => {                
                 // Atualizar o perfil do usuário
@@ -201,12 +199,8 @@ const EditMusic = ({ music }) => {
     };
 
     const checkRegForm = () => {
-        if(!newMusic.titulo || newMusic.titulo === '' || !newMusic.valor || newMusic.valor === '') 
-            {
-                console.log('----------true');
-                return false;
-            }
-        console.log('----------false');
+        if (!newMusic.titulo || newMusic.titulo === '' || !newMusic.valor || newMusic.valor === '')
+            return false;
         return true;
     }
 

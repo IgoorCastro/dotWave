@@ -21,11 +21,8 @@ import Button from '../Button';
 import Loading from '../Loading';
 
 const ProfileEdit = () => {
-    
-    console.log('\n\nEditMusic');
     const { user, setUser } = useAuthContext();
     const [isLoading, setIsLoading] = useState(false);
-    console.log('>> user\n', user);
     const navigate = useNavigate();
     const { toggleProfileEditVisible, isConfirmDialogVisible, toggleConfirmDialogVisible, toggleUserProfileUpdate } = useMainContext();
     const [selectedMusic, setSelectedMusic] = useState(null);
@@ -62,8 +59,6 @@ const ProfileEdit = () => {
             ...prevValues,
             [name]: value
         }));
-
-        console.log('\n\n--userMidia\n', userMidia);
     }
 
     const handleChangeDataValue = (event) => {
@@ -79,7 +74,6 @@ const ProfileEdit = () => {
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
-        console.log('\n\n>>>>>>>> FILE\n\n', file);
         if (!file) return;
 
         if (!file.type.startsWith('image/')) {
@@ -110,7 +104,6 @@ const ProfileEdit = () => {
             }
         };
         img.src = URL.createObjectURL(file);
-        console.log('\n\n--userData\n', userData);
     }
 
     const handleConfirmEditMidia = async () => {
@@ -183,8 +176,6 @@ const ProfileEdit = () => {
                     username: userData.username
                 }
             });
-
-            console.log('\n\n>>response: ', response.data[0]);
 
             setUser(response.data);
 

@@ -80,7 +80,6 @@ const AddMusic = () => {
         // console.log('handleConfirmReg');       
         const formData = new FormData();
         for (const key in newMusic) {
-            console.log('key: ', key, '\n\nnewMusic: ', newMusic, '\n\nnewMusic[key]: ', newMusic[key]);
             if (newMusic[key] instanceof File) {
                 formData.append(key, newMusic[key]);
             } else if (Array.isArray(newMusic[key])) {
@@ -95,10 +94,10 @@ const AddMusic = () => {
         formData.append('usu_token', token);
         formData.append('usu_nomeExb', user[0].usu_nomeExb);
 
-        // Logando o conteúdo do FormData
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ', pair[1]);
-        }
+        // // Logando o conteúdo do FormData
+        // for (let pair of formData.entries()) {
+        //     console.log(pair[0] + ': ', pair[1]);
+        // }
 
         // usar o id ao invez do nome!
         Axios.post("http://localhost:3006/addMusic", formData, {
@@ -131,7 +130,6 @@ const AddMusic = () => {
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
-        console.log('\n\n>>>>>>>> FILE\n\n', file);
         if (!file) return;
 
         if (!file.type.startsWith('image/')) {

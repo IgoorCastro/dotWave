@@ -31,11 +31,8 @@ const TrackCardNew = ({ props, showTitle }) => {
         try{
             if(props){
                 const result = await Axios.delete(`http://localhost:3006/delete/${props.mus_id}`);
-            if(result)
-                console.log(result);
-            else
-                console.log('>> Atenção: Função de delete falhou!');
-            
+            if(!result)
+                alert('>> Atenção: Função de delete falhou!');            
             }
             toggleUserProfileUpdate();
         }catch(err){

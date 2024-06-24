@@ -47,7 +47,6 @@ const Signup = () => {
           }
         });
         if (nomeExbTest.data) { // verifica se a resposta do server é true
-          console.log('Nome de exibição já cadastrado');
           setLabelErro('Nome de exibição já cadastrado');
           return;
         }
@@ -112,7 +111,6 @@ const Signup = () => {
   }
 
   const handleNextForm = async () => {
-    console.log(passwordScoreConfig);
     if(passwordScore > 2){
       try{
         const usernameTest = await Axios.get("http://localhost:3006/usernameTest", {

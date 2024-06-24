@@ -43,7 +43,6 @@ const UserProfile = () => {
 
     // Metodo para verificar quais as midias disponiveis do usuario
     const checkSocialMidia = () => {
-        console.log('(TEST) --> searchUser: ', searchUser);
         if (searchUser) {
             // Lista de ícones válidos
             const validSocial = [];
@@ -57,7 +56,6 @@ const UserProfile = () => {
             ];
 
             for (const { midiaUrl, icon, bgColor } of socialIcons) {
-                console.log('midiaUrl: ', midiaUrl, ': ', searchUser[midiaUrl]);
                 if (searchUser[midiaUrl] !== '' & searchUser[midiaUrl] !== null & searchUser[midiaUrl] !== undefined) {                    
                     validSocial.push(
                         <div>
