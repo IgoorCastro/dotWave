@@ -1,4 +1,5 @@
 // Servidor web .Wave
+require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -7,6 +8,7 @@ const cors = require('cors');
 app.use(cors());
 const upload = require('./multerConfig');
 const fs = require('fs'); // Para lidar com as exclusões de arquivos do Db
+const authenticateToken = require('./authenticateToken'); // Importa o middleware
 
 const jwt = require('jsonwebtoken'); // controle de token para login
 const bcrypt = require('bcrypt'); // criptografia de senha
@@ -28,6 +30,7 @@ const profileImagePath = path.join(__dirname, 'assets', 'profileImage');
 
 // ---------- SQL -----------
 const mysql = require("mysql2/promise");
+
 // - Conexão -
 const db = mysql.createPool({
     host: "127.0.0.1",
@@ -37,21 +40,6 @@ const db = mysql.createPool({
 });
 
 let counter = 1; 
-const timestamp = Date.now();
-
-// Middleware para proteger rotas
-const SECRET_KEY = 'd0tw4v3_';
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-};
 
 // Rota de login
 app.post('/signin', async (req, res) => {
@@ -60,8 +48,8 @@ app.post('/signin', async (req, res) => {
 
     if (request) {
         try {
-            let SQL = 'SELECT *  FROM usuario WHERE usu_nomeExb = ? OR usu_email = ?';
-            const result = await db.query('SELECT * FROM usuario WHERE usu_nomeExb = ? OR usu_email = ?', [request.nomeUsuario, request.nomeUsuario]);
+            const SQL = 'SELECT * FROM usuario WHERE usu_nomeExb = ? OR usu_email = ?';
+            const result = await db.query(SQL, [request.nomeUsuario, request.nomeUsuario]);
             if (result[0].length === 0)
                 return res.status(401).json({ message: 'Usuário não encontrado' });
 
@@ -74,16 +62,17 @@ app.post('/signin', async (req, res) => {
                     return res.status(500).json({ message: 'Erro no servidor' });
                 }
                 if (isMatch) {
-                    // gerando o token JWT
-                    const token = jwt.sign({ id: usuario.usu_id, username: usuario.usu_nomeExb }, SECRET_KEY, { expiresIn: '1h' });
+                    // Gerando o token JWT
+                    const token = jwt.sign({ id: usuario[0].usu_id, username: usuario[0].usu_nomeExb }, process.env.SECRET_KEY, { expiresIn: '1h' });
 
                     return res.status(200).json({ message: 'Bem-vindo', token, usuario });
-                }
-                else
+                } else {
                     return res.status(401).json({ message: 'Senha incorreta' });
+                }
             });
-        }catch(er){
-            console.error('\n\n>Erro no SELECT\n\n-->erro: '. er);
+        } catch (error) {
+            console.error('Erro no SELECT: ', error);
+            res.status(500).json({ message: 'Erro interno do servidor' });
         }
     }
 });
@@ -125,7 +114,7 @@ app.post('/signup', upload.single('imagem'), (req, res) => {
 });
 
 // Rota para upload de arquivos
-app.post('/addMusic', upload.fields([
+app.post('/addMusic', authenticateToken, upload.fields([
     { name: 'audio', maxCount: 1 },
     { name: 'sample1', maxCount: 1 },
     { name: 'sample2', maxCount: 1 },
@@ -136,8 +125,6 @@ app.post('/addMusic', upload.fields([
     console.log('\n--> addMusic/');
     const files = req.files;
     const body = req.body;
-
-    console.log('\n\nfiles: ', files)
 
     if (!files || !body) return res.status(400).send('Preencha todos os campos do formulário!');
 
@@ -388,7 +375,7 @@ app.get("/phoneNumberTest", async (req, res) => {
     }
 });
 
-app.delete("/delete/:mus_id", async (req, res) => {
+app.delete("/delete/:mus_id", authenticateToken, async (req, res) => {
     const { mus_id } = req.params;
     console.log('\n\n--> /delete \n');
     console.log('mus_id: ', mus_id);
@@ -438,7 +425,7 @@ app.delete("/delete/:mus_id", async (req, res) => {
     }
 });
 
-app.put("/editMusic", upload.fields([
+app.put("/editMusic", authenticateToken, upload.fields([
     { name: 'audio', maxCount: 1 },
     { name: 'sample1', maxCount: 1 },
     { name: 'sample2', maxCount: 1 },
@@ -583,7 +570,7 @@ app.put("/editMusic", upload.fields([
     // console.log('body\n', body);
 });
 
-app.put("/editMidia", async (req, res) => {
+app.put("/editMidia", authenticateToken, async (req, res) => {
     console.log('\n\n/editMidia\n');
     const body = req.body.midiaForm; // formulario de ProfileEdit
     const usu_id = req.body.usu_id;
@@ -601,7 +588,7 @@ app.put("/editMidia", async (req, res) => {
     }
 });
 
-app.put("/editProfile", upload.fields([
+app.put("/editProfile", authenticateToken, upload.fields([
     { name: 'imagem', maxCount: 1 }
 ]), async (req, res) => {
     console.log('\n\n/editProfile\n');
@@ -654,9 +641,9 @@ app.put("/editProfile", upload.fields([
 })
 
 // Porta que o servidor ira ouvir
-const serverPort = 3006;
-app.listen(serverPort, () => {
-    console.log("Server On\nServer port: ", serverPort);
+const PORT = process.env.PORT || 3006;
+app.listen(PORT, () => {
+    console.log(`SERVER PORT: ${PORT}`);
 });
 
 // app.get = requisição para pegar valores

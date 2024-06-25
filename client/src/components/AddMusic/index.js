@@ -101,10 +101,12 @@ const AddMusic = () => {
 
         // usar o id ao invez do nome!
         Axios.post("http://localhost:3006/addMusic", formData, {
-            'Content-Type': 'multipart/form-data',
-            usu_id: newMusic.usu_id,
-            usu_token: token,
-            usu_nomeExb: user[0].nomeExb
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`, // Enviar o token no cabeçalho Authorization
+                'usu_id': newMusic.usu_id,
+                'usu_nomeExb': user[0].nomeExb
+            }
         })
             .then((response) => {
                 alert("Registro concluído");

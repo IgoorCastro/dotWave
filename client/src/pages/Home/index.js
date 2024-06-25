@@ -18,6 +18,8 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
+    console.log(`(TEST) 001 --> user\n${user}`);
+
     const dotWave = {
         endereco: 'Rua da Consolação, São Paulo - SP, 01302-000',
         telefone: '(47) 9 6482-4433',
