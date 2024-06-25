@@ -21,7 +21,7 @@ import Button from '../Button';
 import Loading from '../Loading';
 
 const ProfileEdit = () => {
-    const { user, setUser } = useAuthContext();
+    const { user, setUser, token } = useAuthContext();
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const { toggleProfileEditVisible, isConfirmDialogVisible, toggleConfirmDialogVisible, toggleUserProfileUpdate } = useMainContext();
@@ -111,6 +111,10 @@ const ProfileEdit = () => {
             const editResult = Axios.put("http://localhost:3006/editMidia", {
                 midiaForm: userMidia,
                 usu_id: user[0].usu_id
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // token no cabeçalho Authorization
+                }
             });
 
             alert('Edição concluida!');
@@ -143,7 +147,10 @@ const ProfileEdit = () => {
 
         try {
             const dataResult = await Axios.put("http://localhost:3006/editProfile", formData, {
-                'Content-Type': 'multipart/form-data'
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
             });
         
             setIsLoading(!isLoading);
@@ -169,21 +176,21 @@ const ProfileEdit = () => {
             console.log('\n\n-Erro em handleConfirmEditData\n\nErro: ', er);
         }
 
-        // atualizar user com os novos dados do banco
-        try {
-            const response = await Axios.get("http://localhost:3006/getUser", { // busca pelo usuario pesquisado
-                params: {
-                    username: userData.username
-                }
-            });
+        // // atualizar user com os novos dados do banco
+        // try {
+        //     const response = await Axios.get("http://localhost:3006/getUser", { // busca pelo usuario pesquisado
+        //         params: {
+        //             username: userData.username
+        //         }
+        //     });
 
-            setUser(response.data);
+        //     setUser(response.data);
 
-            navigate('/' + userData.username);
-        } catch (er) {
-            console.error('Erro ao atualizar user com os novos dados do banco\n-Erro: ', er)
-        }
-        toggleUserProfileUpdate();
+        //     navigate('/' + userData.username);
+        // } catch (er) {
+        //     console.error('Erro ao atualizar user com os novos dados do banco\n-Erro: ', er)
+        // }
+        // toggleUserProfileUpdate();
     }
 
     const handleKeyDownData = (event) => {

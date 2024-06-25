@@ -1,10 +1,10 @@
 // Servidor web .Wave
-require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
-const express = require('express');
-const path = require('path');
+require('dotenv').config(); // carrega variáveis de ambiente do arquivo .env
+const express = require('express'); // resposavel por gerenciar e responder as req HTTP
+const path = require('path'); // para acesso ao diretorio
 const app = express();
 const multer = require('multer'); // upload de imagens para o server local
-const cors = require('cors');
+const cors = require('cors'); // para permitir ou restringir requisições de recursos entre diferentes origens
 app.use(cors());
 const upload = require('./multerConfig');
 const fs = require('fs'); // Para lidar com as exclusões de arquivos do Db
@@ -63,7 +63,7 @@ app.post('/signin', async (req, res) => {
                 }
                 if (isMatch) {
                     // Gerando o token JWT
-                    const token = jwt.sign({ id: usuario[0].usu_id, username: usuario[0].usu_nomeExb }, process.env.SECRET_KEY, { expiresIn: '1h' });
+                    const token = jwt.sign({ id: usuario[0].usu_id, username: usuario[0].usu_nomeExb }, process.env.SECRET_KEY);
 
                     return res.status(200).json({ message: 'Bem-vindo', token, usuario });
                 } else {

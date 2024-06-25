@@ -74,7 +74,10 @@ const EditMusic = ({ music }) => {
         
         try {
             const response = Axios.put("http://localhost:3006/editMusic", formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                },
                 params: { usu_nomeExb: user[0].nomeExb }
             });
             

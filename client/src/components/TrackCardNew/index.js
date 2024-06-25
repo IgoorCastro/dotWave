@@ -13,7 +13,7 @@ import { useAuthContext } from '../../context/AuthContext';
 
 const TrackCardNew = ({ props, showTitle }) => {
     const { toggleMusicPlayerVisible, setSelectedMusic, isEditMusicVisible, toggleEditMusicVisible, toggleUserProfileUpdate, toggleConfirmDialogVisible, isConfirmDialogVisible } = useMainContext();
-    const { user } = useAuthContext();
+    const { user, token } = useAuthContext();
 
     const togglerSampleVisible = () => {
         toggleMusicPlayerVisible();
@@ -30,7 +30,11 @@ const TrackCardNew = ({ props, showTitle }) => {
     const handleDeleteItem = async () => {
         try{
             if(props){
-                const result = await Axios.delete(`http://localhost:3006/delete/${props.mus_id}`);
+                const result = await Axios.delete(`http://localhost:3006/delete/${props.mus_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // token no cabeçalho Authorization
+                    }
+                });
             if(!result)
                 alert('>> Atenção: Função de delete falhou!');            
             }
