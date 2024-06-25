@@ -76,7 +76,7 @@ const Signin = () => {
         if (countPasswordAttempts >= 6) {
             setLabelErro(null);
             setIsButtonDisabled(true);
-            setRemainingTime(60); // Tempo em segundos
+            setRemainingTime(10); // Tempo em segundos
             timerRef.current = setTimeout(() => {
                 setIsButtonDisabled(false);
                 setCountPasswordAttempts(0);

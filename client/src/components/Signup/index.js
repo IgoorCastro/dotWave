@@ -25,7 +25,7 @@ const Signup = () => {
     color: 'transparent',
     width: ''
   }); // Estado para armazenar as config da senha
-  const [passwordScore, setPasswordScore] = useState(0);
+  const [passwordScore, setPasswordScore] = useState(1);
   // const [passwordColor, setPasswordColor] = useState('trasnparent');
   const [cadastroForm, setCadastroForm] = useState({
     nome: '',   // Brendan 
@@ -111,7 +111,8 @@ const Signup = () => {
   }
 
   const handleNextForm = async () => {
-    if(passwordScore > 2){
+    console.log('(passwordScore): ', passwordScore);
+    if(passwordScore === 4){
       try{
         const usernameTest = await Axios.get("http://localhost:3006/usernameTest", {
           params: {
@@ -161,11 +162,12 @@ const Signup = () => {
       ...prevValues,
       [name]: value,
     }));
-    setLabelErro(null);
 
     if (name === 'senha') { // Verificar se a senha possui um caractere especial e uma letra maiuscula
       const checkedPass = zxcvbn(value);
       setPasswordScore(checkedPass.score);
+
+      
       
        // Verificação de caractere especial
        const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/g.test(value);
@@ -173,23 +175,24 @@ const Signup = () => {
        // Verificação de letra maiúscula
        const hasUpperCase = /[A-Z]/g.test(value);
  
-       // Ajustar a pontuação e adicionar sugestão se necessário
-       if ((!hasSpecialCharacter || !hasUpperCase) && checkedPass.score > 3) {
-         checkedPass.score = 3; // Reduzir a pontuação para 3 se não atender aos critérios
-         if (!hasSpecialCharacter) {
-           setLabelErro("Adicione pelo menos um caractere especial.");
-         }
-         if (!hasUpperCase) {
+      // Ajustar a pontuação e adicionar sugestão se necessário
+      if ((!hasSpecialCharacter || !hasUpperCase) && checkedPass.score > 3) {
+        setPasswordScore(3);
+        checkedPass.score = 3; // Reduzir a pontuação para 3 se não atender aos critérios         
+        if (!hasSpecialCharacter) {
+          setLabelErro("Adicione pelo menos um caractere especial.");
+        }
+        if (!hasUpperCase) {
           setLabelErro("Inclua pelo menos uma letra maiúscula.");
-         }
-       }
-
+        }
+      }else
+        setLabelErro(null);
+       console.log(`checkedPass.score: ${checkedPass.score}`);
        setPasswordScoreConfig({
         color: getScoreColor(checkedPass.score),
         width: getScoreWidth(checkedPass.score)
       });
     }
-    
   }
 
   const handleImageChange = (event) => {
